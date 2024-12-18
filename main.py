@@ -74,6 +74,9 @@ class MainGrid(GridLayout):
         else:
             button.text = "Play"
             button.background_color = [0,1,0,1]
+            self.selectedButtons = []
+            if self.clockEventCellLoop:
+                self.clockEventCellLoop.cancel()
 
     # method for starting the game loop of the cells
     def play(self):
@@ -81,8 +84,10 @@ class MainGrid(GridLayout):
     
     # method for the game loop of the cells
     def cellLoop(self, t):
-        # creating a copy of the grid
+        #print("loop")
+        buttonsToAlive = []
         copyGrid = []
+        # copying the grid to the copyGrid list, this is technicaly not neccesery, but it makes the code more readable and it was already done like this when I realised it is not neccesery
         for i in range(self.gridSize):
             copyGrid.append([])
             for j in range(self.gridSize):
@@ -92,34 +97,58 @@ class MainGrid(GridLayout):
         for i in range(self.gridSize):
             for j in range(self.gridSize):
                 neighbours = 0
-                #print("check")
                 # checking the number of living neighbours around the currently checked cell
+                # topleft
                 if i - 1 >= 0 and j-1 >=0 and copyGrid[i-1][j-1] == self.allButtons[0].aliveColour:
                     neighbours += 1
+                    #print("topleft")
+                # top center
                 if i - 1 >= 0 and copyGrid[i-1][j] == self.allButtons[0].aliveColour:
                     neighbours += 1
+                    #print("top center")
+                # top right
                 if i - 1 >= 0 and j+1 < self.gridSize and copyGrid[i-1][j+1] == self.allButtons[0].aliveColour:
                     neighbours += 1
+                    #print("top right")
+                # left
                 if j-1 >=0 and copyGrid[i][j-1] == self.allButtons[0].aliveColour:
                     neighbours += 1
+                    #print("left")
+                # right
                 if j+1 < self.gridSize and copyGrid[i][j+1] == self.allButtons[0].aliveColour:
                     neighbours += 1
-                if j-1 >=0 and i+1 > self.gridSize and copyGrid[i+1][j-1] == self.allButtons[0].aliveColour:
+                    #print("right")
+                # bottom left
+                if i+1 < self.gridSize and j-1 >=0 and copyGrid[i+1][j-1] == self.allButtons[0].aliveColour:
                     neighbours += 1
+                    #print("bottom left")
+                # bottom center
                 if i+1 < self.gridSize and copyGrid[i+1][j] == self.allButtons[0].aliveColour:
                     neighbours += 1
+                    #print("bottom center")
+                # bottom right
                 if i+1 < self.gridSize and j+1 < self.gridSize and copyGrid[i+1][j+1] == self.allButtons[0].aliveColour:
                     neighbours += 1
-                
-                if neighbours > 0:
-                    print("The cell at " + str(i) + " " + str(j) + " has "+ str(neighbours) + " of alive neighbours")
+                    #print("bottom right")
                 # checking if the currently checked cell is alive
                 if self.allButtons[i*self.gridSize+j].background_color == self.allButtons[i*self.gridSize+j].aliveColour:
-                    #print("The cell at " + str(i) + " " + str(j) + " is alive and has "+ str(neighbours) + " of alive neighbours")
-                    pass
+                    # checking if the cell has 2 or 3 alive neighbours, if so it will stay alive
+                    if neighbours == 2 or neighbours == 3:
+                        buttonsToAlive.append(self.allButtons[i*self.gridSize+j])
                 else:
-                    #print("The cell at " + str(i) + " " + str(j) + " is dead and has "+ str(neighbours) + " of alive neighbours")
-                    pass
+                    # checking if the cell has 3 alive neighbours, if so it will be set to alive
+                    if neighbours == 3:
+                        buttonsToAlive.append(self.allButtons[i*self.gridSize+j])
+        # resetting the grid to the original state
+        for button in self.allButtons:
+            button.background_color = button.bothColours[0]
+            self.selectedButtons = []
+        # setting all the cells in buttonsToAlive list to alive
+        #print(len(buttonsToAlive))
+        #print(buttonsToAlive)
+        for button in buttonsToAlive:
+            button.background_color = button.aliveColour
+            self.selectedButtons.append(button.id)
 
     # method for starting the colour changing of the main label, this is called only once, when the app starts
     def colourChanges(self):
@@ -166,6 +195,8 @@ class MainGrid(GridLayout):
         self.allButtons = []
         self.ids.playStopButton.text = "Play"
         self.ids.playStopButton.background_color = [0,1,0,1]
+        if self.clockEventCellLoop:
+            self.clockEventCellLoop.cancel()
         self.fillGrid()
 
 # the main app class
