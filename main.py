@@ -60,7 +60,9 @@ class MainGrid(GridLayout):
     def sliderFunc(self):
         slider = self.ids.speedSlider
         self.speed = slider.value
-        print(slider.value)
+        if self.clockEventCellLoop:
+            self.clockEventCellLoop.cancel()
+            self.play()
 
     # method used for handling the play/stop button presses
     def playStop(self):
@@ -84,7 +86,6 @@ class MainGrid(GridLayout):
     
     # method for the game loop of the cells
     def cellLoop(self, t):
-        #print("loop")
         buttonsToAlive = []
         copyGrid = []
         # copying the grid to the copyGrid list, this is technicaly not neccesery, but it makes the code more readable and it was already done like this when I realised it is not neccesery
@@ -92,7 +93,6 @@ class MainGrid(GridLayout):
             copyGrid.append([])
             for j in range(self.gridSize):
                 copyGrid[i].append(self.allButtons[i*self.gridSize+j].background_color)
-        #print(copyGrid)
         # checking each cell
         for i in range(self.gridSize):
             for j in range(self.gridSize):
@@ -101,35 +101,27 @@ class MainGrid(GridLayout):
                 # topleft
                 if i - 1 >= 0 and j-1 >=0 and copyGrid[i-1][j-1] == self.allButtons[0].aliveColour:
                     neighbours += 1
-                    #print("topleft")
                 # top center
                 if i - 1 >= 0 and copyGrid[i-1][j] == self.allButtons[0].aliveColour:
                     neighbours += 1
-                    #print("top center")
                 # top right
                 if i - 1 >= 0 and j+1 < self.gridSize and copyGrid[i-1][j+1] == self.allButtons[0].aliveColour:
                     neighbours += 1
-                    #print("top right")
                 # left
                 if j-1 >=0 and copyGrid[i][j-1] == self.allButtons[0].aliveColour:
                     neighbours += 1
-                    #print("left")
                 # right
                 if j+1 < self.gridSize and copyGrid[i][j+1] == self.allButtons[0].aliveColour:
                     neighbours += 1
-                    #print("right")
                 # bottom left
                 if i+1 < self.gridSize and j-1 >=0 and copyGrid[i+1][j-1] == self.allButtons[0].aliveColour:
                     neighbours += 1
-                    #print("bottom left")
                 # bottom center
                 if i+1 < self.gridSize and copyGrid[i+1][j] == self.allButtons[0].aliveColour:
                     neighbours += 1
-                    #print("bottom center")
                 # bottom right
                 if i+1 < self.gridSize and j+1 < self.gridSize and copyGrid[i+1][j+1] == self.allButtons[0].aliveColour:
                     neighbours += 1
-                    #print("bottom right")
                 # checking if the currently checked cell is alive
                 if self.allButtons[i*self.gridSize+j].background_color == self.allButtons[i*self.gridSize+j].aliveColour:
                     # checking if the cell has 2 or 3 alive neighbours, if so it will stay alive
@@ -144,8 +136,6 @@ class MainGrid(GridLayout):
             button.background_color = button.bothColours[0]
             self.selectedButtons = []
         # setting all the cells in buttonsToAlive list to alive
-        #print(len(buttonsToAlive))
-        #print(buttonsToAlive)
         for button in buttonsToAlive:
             button.background_color = button.aliveColour
             self.selectedButtons.append(button.id)
@@ -153,6 +143,7 @@ class MainGrid(GridLayout):
     # method for starting the colour changing of the main label, this is called only once, when the app starts
     def colourChanges(self):
         self.clockEventColor = Clock.schedule_interval(self.updateColour, self.speed)
+
     # this method makes the main label change colours
     def updateColour(self, t):
         label = self.ids.mainLabel
@@ -165,23 +156,24 @@ class MainGrid(GridLayout):
                 if label.color[i] == 1 and i:
                     self.changingColoursOfTheMainLabel.append((i, "down"))
                     break
-                elif label.color[i] == 0 and i:
+                elif label.color[i] == 0.5 and i:
                     self.changingColoursOfTheMainLabel.append((i, "up"))
                     break
                 else:
                     self.changingColoursOfTheMainLabel.append((i, random.choice(["up", "down"])))
         for i in self.changingColoursOfTheMainLabel:
             if i[1] == "up":
-                label.color[i[0]] += 0.09
+                label.color[i[0]] += random.randint(1, 5)/100
             elif i[1] == "down":
-                label.color[i[0]] -= 0.09
+                label.color[i[0]] -= random.randint(1, 5)/100
         for l in range(3):
-            label.color[l] = round(label.color[l], 1) # this is to prevent the weird computer floats with like 1000 decimal places
+            label.color[l] = round(label.color[l], 2) # this is to prevent the weird computer floats with like 1000 decimal places
         for colour in self.changingColoursOfTheMainLabel:
             if colour[1] == "up" and label.color[colour[0]] >= 1:
                 self.changingColoursOfTheMainLabel.remove(colour)
-            elif colour[1] == "down" and label.color[colour[0]] <= 0:
+            elif colour[1] == "down" and label.color[colour[0]] <= 0.5:
                 self.changingColoursOfTheMainLabel.remove(colour)
+        #print(self.ids.mainLabel.color)
 
     # method for opening the settings popup
     def settings(self):

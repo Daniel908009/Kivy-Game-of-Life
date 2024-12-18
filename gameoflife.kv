@@ -1,3 +1,4 @@
+# main grid of the app
 <MainGrid>
     cols: 1
     gridSize: 10
@@ -12,12 +13,12 @@
         size_hint_y: None
         size_hint: (1, 0.2)
         text: 'Game of Life'
-        color: 1,0.5,0,1
-        font_size: 30
+        color: 1,0.5,0.5,1
+        font_size: 35
         on_kv_post: root.colourChanges()
     GridLayout:
         id: grid
-        padding: 10
+        padding: 15
         cols: root.gridSize
         size_hint_y: None
         size_hint: (1,0.6)
@@ -36,8 +37,9 @@
                 font_size: 20
             Slider:
                 orientation: 'horizontal'
-                min: 1
-                max: 60
+                min: 0.01
+                max: 5
+                value: root.speed
                 id: speedSlider
                 on_value: root.sliderFunc()
         Button:
@@ -62,13 +64,15 @@
             on_press: root.playStop()
             on_kv_post: root.playStop() # this gives the button the right initial color and text
 
+# cell/button of the grid
 <GridButton>
-    bothColours: [[0.7,0.7,0.7,1],[0,0,1,1]]
+    bothColours: [[0.7,0.7,0.7,1],[0,0,1,1]] # deadColour, selectedColour
     aliveColour: [0,1,0,1]
     caller: None
     background_color: root.bothColours[0]
     on_press: root.clicked()
 
+# settings popup
 <SettingsPopup>
     title: 'Settings'
     size_hint: (0.8,0.9)
@@ -93,6 +97,8 @@
                 orientation: 'horizontal'
                 min: 5
                 max: 25
+                value: root.gridSize
+                step: 1
                 id: gridSizeSlider
                 on_value: root.updateSliderNumber()
             Label:
@@ -103,12 +109,14 @@
                 font_size: 20
             Button:
                 text: 'Close'
+                background_color: 1,0,0,1
                 font_size: 20
                 size_hint_y: None
                 size_hint: (1,0.2)
                 on_press: root.dismiss()
             Button:
                 text: 'Apply'
+                background_color: 0,1,0,1
                 font_size: 20
                 size_hint_y: None
                 size_hint: (1,0.2)
