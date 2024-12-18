@@ -3,7 +3,8 @@
     gridSize: 10
     allButtons: []
     selectedButtons: []
-    clockEvent: None
+    clockEventColor: None
+    clockEventCellLoop: None
     speed: 1
     changingColoursOfTheMainLabel: []
     Label:
@@ -63,6 +64,7 @@
 
 <GridButton>
     bothColours: [[0.7,0.7,0.7,1],[0,0,1,1]]
+    aliveColour: [0,1,0,1]
     caller: None
     background_color: root.bothColours[0]
     on_press: root.clicked()

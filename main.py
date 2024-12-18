@@ -31,8 +31,11 @@ class GridButton(Button):
 
     # method for selecting/deselecting the button and changing its colour accordingly
     def clicked(self):
-        if self.bothColours[0] == self.background_color:
+        if self.bothColours[0] == self.background_color and self.caller.ids.playStopButton.text == "Play":
             self.background_color = self.bothColours[1]
+            self.caller.selectedButtons.append(self.id)
+        elif self.bothColours[0] == self.background_color and self.caller.ids.playStopButton.text == "Stop":
+            self.background_color = self.aliveColour
             self.caller.selectedButtons.append(self.id)
         else:
             self.background_color = self.bothColours[0]
@@ -66,7 +69,7 @@ class MainGrid(GridLayout):
             button.text = 'Stop'
             button.background_color = [1,1,0,1]
             for i in self.selectedButtons:
-                self.allButtons[i].background_color = [0,1,0,1]
+                self.allButtons[i].background_color = self.allButtons[0].aliveColour
             self.play()
         else:
             button.text = "Play"
@@ -74,14 +77,53 @@ class MainGrid(GridLayout):
 
     # method for starting the game loop of the cells
     def play(self):
-        # the main game logic will later be added here
-        #print(self.allButtons)
-        #print(self.selectedButtons)
-        pass
+        self.clockEventCellLoop = Clock.schedule_interval(self.cellLoop, self.speed)
+    
+    # method for the game loop of the cells
+    def cellLoop(self, t):
+        # creating a copy of the grid
+        copyGrid = []
+        for i in range(self.gridSize):
+            copyGrid.append([])
+            for j in range(self.gridSize):
+                copyGrid[i].append(self.allButtons[i*self.gridSize+j].background_color)
+        #print(copyGrid)
+        # checking each cell
+        for i in range(self.gridSize):
+            for j in range(self.gridSize):
+                neighbours = 0
+                #print("check")
+                # checking the number of living neighbours around the currently checked cell
+                if i - 1 >= 0 and j-1 >=0 and copyGrid[i-1][j-1] == self.allButtons[0].aliveColour:
+                    neighbours += 1
+                if i - 1 >= 0 and copyGrid[i-1][j] == self.allButtons[0].aliveColour:
+                    neighbours += 1
+                if i - 1 >= 0 and j+1 < self.gridSize and copyGrid[i-1][j+1] == self.allButtons[0].aliveColour:
+                    neighbours += 1
+                if j-1 >=0 and copyGrid[i][j-1] == self.allButtons[0].aliveColour:
+                    neighbours += 1
+                if j+1 < self.gridSize and copyGrid[i][j+1] == self.allButtons[0].aliveColour:
+                    neighbours += 1
+                if j-1 >=0 and i+1 > self.gridSize and copyGrid[i+1][j-1] == self.allButtons[0].aliveColour:
+                    neighbours += 1
+                if i+1 < self.gridSize and copyGrid[i+1][j] == self.allButtons[0].aliveColour:
+                    neighbours += 1
+                if i+1 < self.gridSize and j+1 < self.gridSize and copyGrid[i+1][j+1] == self.allButtons[0].aliveColour:
+                    neighbours += 1
+                
+                if neighbours > 0:
+                    print("The cell at " + str(i) + " " + str(j) + " has "+ str(neighbours) + " of alive neighbours")
+                # checking if the currently checked cell is alive
+                if self.allButtons[i*self.gridSize+j].background_color == self.allButtons[i*self.gridSize+j].aliveColour:
+                    #print("The cell at " + str(i) + " " + str(j) + " is alive and has "+ str(neighbours) + " of alive neighbours")
+                    pass
+                else:
+                    #print("The cell at " + str(i) + " " + str(j) + " is dead and has "+ str(neighbours) + " of alive neighbours")
+                    pass
 
     # method for starting the colour changing of the main label, this is called only once, when the app starts
     def colourChanges(self):
-        self.clockEvent = Clock.schedule_interval(self.updateColour, self.speed)
+        self.clockEventColor = Clock.schedule_interval(self.updateColour, self.speed)
     # this method makes the main label change colours
     def updateColour(self, t):
         label = self.ids.mainLabel
