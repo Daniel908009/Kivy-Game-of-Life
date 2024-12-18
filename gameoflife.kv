@@ -1,0 +1,60 @@
+<MainGrid>
+    cols: 1
+    gridSize: 10
+    allButtons: []
+    selectedButtons: []
+    clockEvent: None
+    speed: 1
+    changingColoursOfTheMainLabel: []
+    Label:
+        id: mainLabel
+        size_hint_y: None
+        size_hint: (1, 0.2)
+        text: 'Game of Life'
+        color: 1,0.5,0,1
+        font_size: 30
+        on_kv_post: root.colourChanges()
+    GridLayout:
+        id: grid
+        padding: 10
+        cols: root.gridSize
+        size_hint_y: None
+        size_hint: (1,0.6)
+        on_kv_post: root.fillGrid()
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint_y: None
+        padding: 10
+        size_hint: (1,0.1)
+        Label:
+            text: 'Speed'
+            font_size: 20
+        Slider:
+            orientation: 'horizontal'
+            min: 1
+            max: 60
+            id: speedSlider
+            on_value: root.sliderFunc()
+    GridLayout:
+        cols: 2
+        padding: 10
+        spacing: 5
+        size_hint_y: None
+        size_hint: (1,0.1)
+        Button:
+            text: 'Reset'
+            background_color: 1,0,0,1
+            font_size: 20
+            on_press: root.reset()
+        Button:
+            id: playStopButton
+            text: ''
+            font_size: 20
+            on_press: root.playStop()
+            on_kv_post: root.playStop() # this gives the button the right initial color and text
+
+<GridButton>
+    bothColours: [[0.7,0.7,0.7,1],[0,0,1,1]]
+    caller: None
+    background_color: root.bothColours[0]
+    on_press: root.clicked()
