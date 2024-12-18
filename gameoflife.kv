@@ -21,20 +21,28 @@
         size_hint_y: None
         size_hint: (1,0.6)
         on_kv_post: root.fillGrid()
-    BoxLayout:
-        orientation: 'vertical'
+    GridLayout:
+        cols: 2
         size_hint_y: None
-        padding: 10
         size_hint: (1,0.1)
-        Label:
-            text: 'Speed'
+        padding: 10
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            size_hint: (1,0.1)
+            Label:
+                text: 'Speed'
+                font_size: 20
+            Slider:
+                orientation: 'horizontal'
+                min: 1
+                max: 60
+                id: speedSlider
+                on_value: root.sliderFunc()
+        Button:
+            text: 'Settings'
             font_size: 20
-        Slider:
-            orientation: 'horizontal'
-            min: 1
-            max: 60
-            id: speedSlider
-            on_value: root.sliderFunc()
+            on_press: root.settings()
     GridLayout:
         cols: 2
         padding: 10
@@ -58,3 +66,48 @@
     caller: None
     background_color: root.bothColours[0]
     on_press: root.clicked()
+
+<SettingsPopup>
+    title: 'Settings'
+    size_hint: (0.8,0.9)
+    gridSize: 0
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'Settings'
+            font_size: 30
+            size_hint_y: None
+            size_hint: (1,0.1)
+        GridLayout:
+            cols: 2
+            padding: 10
+            size_hint_y: None
+            size_hint: (1,0.9)
+            Label:
+                id: gridSizeLabel
+                text: 'Grid Size: ' + str(root.gridSize)
+                font_size: 20
+            Slider:
+                orientation: 'horizontal'
+                min: 5
+                max: 25
+                id: gridSizeSlider
+                on_value: root.updateSliderNumber()
+            Label:
+                text: 'Some other settings will be here'
+                font_size: 20
+            Label:
+                text: 'Some other settings will be here'
+                font_size: 20
+            Button:
+                text: 'Close'
+                font_size: 20
+                size_hint_y: None
+                size_hint: (1,0.2)
+                on_press: root.dismiss()
+            Button:
+                text: 'Apply'
+                font_size: 20
+                size_hint_y: None
+                size_hint: (1,0.2)
+                on_press: root.apply()
