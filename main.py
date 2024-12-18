@@ -2,7 +2,7 @@ from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
 from kivy.clock import Clock
-
+import random
 
 
 
@@ -72,14 +72,35 @@ class MainGrid(GridLayout):
         self.clockEvent = Clock.schedule_interval(self.updateColour, self.speed)
     def updateColour(self, t):
         label = self.ids.mainLabel
-        print(label.color)
-        if len(self.changingColoursOfTheMainLabel < 2):
-            for i in range(3):
-                if label.color[i] == 1.0:
-                    self.changingColoursOfTheMainLabel.append(i)
-        # more logic iwll be added here
-            
-        
+        #print(label.color[0])
+        for i in range(3):
+            temp = True
+            for object in self.changingColoursOfTheMainLabel:
+                if object[0] == i:
+                    temp = False
+            if temp:
+                if label.color[i] == 1 and i:
+                    self.changingColoursOfTheMainLabel.append((i, "down"))
+                    break
+                elif label.color[i] == 0 and i:
+                    self.changingColoursOfTheMainLabel.append((i, "up"))
+                    break
+                else:
+                    self.changingColoursOfTheMainLabel.append((i, random.choice(["up", "down"])))
+        print(str(self.changingColoursOfTheMainLabel) + " changing colours")
+        for i in self.changingColoursOfTheMainLabel:
+            if i[1] == "up":
+                label.color[i[0]] += 0.1
+            elif i[1] == "down":
+                label.color[i[0]] -= 0.1
+        for l in range(3):
+            label.color[l] = round(label.color[l], 1) # this is to prevent the weird computer floats with like 1000 decimal places
+        print(str(label.color) + " label colour")
+        for colour in self.changingColoursOfTheMainLabel:
+            if colour[1] == "up" and label.color[colour[0]] >= 1:
+                self.changingColoursOfTheMainLabel.remove(colour)
+            elif colour[1] == "down" and label.color[colour[0]] <= 0:
+                self.changingColoursOfTheMainLabel.remove(colour)
 
     def reset(self):
         print("reset")
