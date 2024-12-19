@@ -16,6 +16,8 @@ class SettingsPopup(Popup):
     def apply(self):
         self.caller.gridSize = int(self.ids.gridSizeSlider.value)
         self.caller.reset()
+        if self.ids.randomCellsSpinner.text == "Yes":
+            self.caller.selectRandomCells()
         self.dismiss()
 
     # method for updating the grid size label with the right slider number
@@ -63,6 +65,13 @@ class MainGrid(GridLayout):
         if self.clockEventCellLoop:
             self.clockEventCellLoop.cancel()
             self.play()
+    
+    # method for selecting random cells
+    def selectRandomCells(self):
+        for i in range(self.gridSize):
+            for j in range(self.gridSize):
+                if random.randint(0,2) == 1:
+                    self.allButtons[i*self.gridSize+j].clicked()
 
     # method used for handling the play/stop button presses
     def playStop(self):
@@ -88,6 +97,8 @@ class MainGrid(GridLayout):
     def cellLoop(self, t):
         buttonsToAlive = []
         copyGrid = []
+        self.numberOfCycle += 1
+        self.ids.cycleLabel.text = "Cycle: " + str(self.numberOfCycle)
         # copying the grid to the copyGrid list, this is technicaly not neccesery, but it makes the code more readable and it was already done like this when I realised it is not neccesery
         for i in range(self.gridSize):
             copyGrid.append([])
@@ -173,7 +184,6 @@ class MainGrid(GridLayout):
                 self.changingColoursOfTheMainLabel.remove(colour)
             elif colour[1] == "down" and label.color[colour[0]] <= 0.5:
                 self.changingColoursOfTheMainLabel.remove(colour)
-        #print(self.ids.mainLabel.color)
 
     # method for opening the settings popup
     def settings(self):
@@ -189,6 +199,8 @@ class MainGrid(GridLayout):
         self.ids.playStopButton.background_color = [0,1,0,1]
         if self.clockEventCellLoop:
             self.clockEventCellLoop.cancel()
+        self.ids.cycleLabel.text = "Cycle: 0"
+        self.numberOfCycle = 0
         self.fillGrid()
 
 # the main app class

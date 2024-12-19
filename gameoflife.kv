@@ -8,14 +8,21 @@
     clockEventCellLoop: None
     speed: 1
     changingColoursOfTheMainLabel: []
+    numberOfCycle: 0
     Label:
         id: mainLabel
         size_hint_y: None
-        size_hint: (1, 0.2)
+        size_hint: (1, 0.1)
         text: 'Game of Life'
         color: 1,0.5,0.5,1
         font_size: 35
         on_kv_post: root.colourChanges()
+    Label:
+        id: cycleLabel
+        size_hint_y: None
+        size_hint: (1,0.1)
+        text: 'Cycle: ' + str(root.numberOfCycle)
+        font_size: 20
     GridLayout:
         id: grid
         padding: 15
@@ -85,39 +92,67 @@
             size_hint_y: None
             size_hint: (1,0.1)
         GridLayout:
-            cols: 2
+            cols: 1
             padding: 10
             size_hint_y: None
             size_hint: (1,0.9)
-            Label:
-                id: gridSizeLabel
-                text: 'Grid Size: ' + str(root.gridSize)
-                font_size: 20
-            Slider:
-                orientation: 'horizontal'
-                min: 5
-                max: 25
-                value: root.gridSize
-                step: 1
-                id: gridSizeSlider
-                on_value: root.updateSliderNumber()
-            Label:
-                text: 'Some other settings will be here'
-                font_size: 20
-            Label:
-                text: 'Some other settings will be here'
-                font_size: 20
-            Button:
-                text: 'Close'
-                background_color: 1,0,0,1
-                font_size: 20
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                size_hint: (1,1)
+                padding: 10
+                GridLayout:
+                    cols: 2
+                    size_hint_y: None
+                    size_hint: (1,0.5)
+                    padding: (0,35)
+                    Label:
+                        id: gridSizeLabel
+                        text: 'Grid Size: ' + str(root.gridSize)
+                        font_size: 20
+                        size_hint_y: None
+                        height: 45
+                    Slider:
+                        orientation: 'horizontal'
+                        min: 5
+                        max: 25
+                        value: root.gridSize
+                        step: 1
+                        size_hint_y: None
+                        height: 45
+                        id: gridSizeSlider
+                        on_value: root.updateSliderNumber()
+                GridLayout:
+                    cols: 2
+                    size_hint_y: None
+                    size_hint: (1,0.5)
+                    Label:
+                        text: 'Select random cells'
+                        font_size: 20
+                        size_hint_y: None
+                        height: 45
+                    Spinner:
+                        id: randomCellsSpinner
+                        text: 'No'
+                        font_size: 20
+                        size_hint_y: None
+                        height: 45
+                        values: ['No', 'Yes']
+            GridLayout:
+                cols: 2
                 size_hint_y: None
                 size_hint: (1,0.2)
-                on_press: root.dismiss()
-            Button:
-                text: 'Apply'
-                background_color: 0,1,0,1
-                font_size: 20
-                size_hint_y: None
-                size_hint: (1,0.2)
-                on_press: root.apply()
+                Button:
+                    text: 'Close'
+                    background_color: 1,0,0,1
+                    font_size: 20
+                    size_hint_y: None
+                    size_hint: (1,0.2)
+                    on_press: root.dismiss()
+                Button:
+                    text: 'Apply'
+                    background_color: 0,1,0,1
+                    font_size: 20
+                    size_hint_y: None
+                    size_hint: (1,0.2)
+                    on_press: root.apply()
