@@ -16,6 +16,7 @@
 <p>Resizable grid.</p>
 <p>Settings window(custom size of the grid, select random tiles option).</p>
 <p>Label displaying the number of cycles that passed</p>
+<p>Adding cells while the game loop is running</p>
 
 ## Screenshots
 ![image](https://github.com/user-attachments/assets/da1fff71-fd05-4746-9296-e59e7dd93464)
