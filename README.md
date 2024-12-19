@@ -10,6 +10,7 @@
 <p>There is a grid of cells, that are either alive or dead. Every 0.1 - 5 seconds a cycle starts. The cycle decides whether the cell stays alive or dies based on the amount of alive neighbors of the cell. Hopefully this makes sense. If not read the explanation above or google conways game of life.</p>
 
 <p>Video of this project: https://www.youtube.com/watch?v=2XkXqGcKzcA </p>
+<p>At the end of the video you can see a stable formation of cells (infinite loop).</p>
 
 ## Features
 <p>Resizable grid.</p>
