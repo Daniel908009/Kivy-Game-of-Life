@@ -61,5 +61,5 @@ Enjoy! <br>
 <p>*Replace the /path/to/requirements.txt with the actual path. </p>
 <p>Enjoy! </p>
 <h2>Using Pypi</h2>
-<p>simply open your command prompt and enter this command: pip install kivy_tic_tac_toe_package </p>
-<p>then you can run it with this command:  python3 -m kivy_game_of_life_package.main </p>
+<p>simply open your command prompt and enter this command: pip install kivy-game-of-life-package </p>
+<p>then you can run it with this command: kivy_game_of_life_package </p>
